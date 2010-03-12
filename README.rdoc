@@ -7,13 +7,17 @@ things simpler for monitoring Cruise pipelines.
 == How it works
 
 First time, you may try this, after installed the gem, type in 'cruiseface'
+
 Then it'll ask you cruise site url, for example:
 
   https://cruise.domain.com/cruise
 
 Then your login user name and password
+
 Then it will fetch all pipelines on the server, and list them, you need type in
+
 the index number, e.g. 5,10
+
 Done.
 
 For myself, I open a terminal window using black background and change the font to 18pt.
