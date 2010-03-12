@@ -33,8 +33,8 @@ Done.
 
 == Why a new dashboard
 
-When working with 2 pipelines, each has 4+ stages and there are 50+ jobs a stage,
-the following thing got important for my daily work of checking build:
+When working with 2 pipelines, each has 4+ stages and has a stage with 50+ jobs,
+the following information is enough and need for my daily work of checking build:
 
 * Build pass/failed status
 
