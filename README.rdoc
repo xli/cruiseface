@@ -15,12 +15,12 @@ Then it'll ask you cruise site url, for example:
 Then your login user name and password
 
 Then it will fetch all pipelines on the server, and list them, you need type in
-
 the index number, e.g. 5,10
 
 Done.
 
 For myself, I open a terminal window using black background and change the font to 18pt.
+
 Then specifying some environment variables in my ~/.profile:
 
   export CRUISE_SERVER_URL='https://cruise.domain.com/cruise'
@@ -28,6 +28,7 @@ Then specifying some environment variables in my ~/.profile:
   export CRUISE_PIPELINE_NAMES='xx_trunk--CentOS5,xx_trunk--Windows2003'
 
 Then type 'cruiseface' in the terminal, cruiseface will ask for the password.
+
 Done.
 
 == Why a new dashboard
