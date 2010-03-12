@@ -7,33 +7,11 @@ require 'logger'
 ActiveResource::Base.logger = Logger.new(STDOUT)
 ActiveResource::Base.logger.level = Logger::INFO
 
-namespace :dogfood do
-  task :mingle do
-    puts "initializing first report"
-    loop do
-      report = %x[rake dogfood:do_report]
-      system("clear")
-      puts report
-      sleep(10)
-    end
-  end
-  task :do_report do
-    ActiveResource::Base.logger.level = Logger::ERROR
-    puts ""
-    puts "********** #{Time.now} ***********"
-    CruiseFace.site('https://cruise01.thoughtworks.com/cruise').login('xli', Base64.decode64(ENV['LDAP_CODE']))
-    CruiseFace.output('Mingle_trunk--CentOS5-Oracle10g') rescue nil
-    CruiseFace.output('Mingle_trunk--Windows2003-PostgreSQL') rescue nil
-    CruiseFace.site('http://fmtstdmngdev01.thoughtworks.com:8153/cruise').login('xli', Base64.decode64(ENV['LDAP_CODE']))
-    CruiseFace.output('xli-precommit') rescue nil
-  end
-end
-
 namespace :dump do
   task :pipeline_status do
     CruiseFace.site('https://cruise01.thoughtworks.com/cruise').login('xli', Base64.decode64(ENV['LDAP_CODE']))
     ps = CruiseFace::Resource.find_pipeline_status
-    File.open "./test/data/ps.xml", 'w' do |f|
+    File.open "./tast/data/ps.xml", 'w' do |f|
       f.write ps.to_xml
     end
   end
@@ -41,14 +19,14 @@ namespace :dump do
   task :pipeline_history do
     CruiseFace.site('https://cruise01.thoughtworks.com/cruise').login('xli', Base64.decode64(ENV['LDAP_CODE']))
     pipeline = CruiseFace.get(ENV['PN'])
-    File.open "./test/data/#{pipeline.name}.xml", 'w' do |f|
+    File.open "./tast/data/#{pipeline.name}.xml", 'w' do |f|
       f.write pipeline.resource.to_xml
     end
     pipeline.history.each do |history_pipeline|
       history_pipeline.stages.each do |stage_name, stage|
         begin
           stage_status = history_pipeline.find_stage_status(stage)
-          File.open "./test/data/#{history_pipeline.name}-#{history_pipeline.label}-#{stage.name}-#{stage.counter}.xml", 'w' do |f|
+          File.open "./tast/data/#{history_pipeline.name}-#{history_pipeline.label}-#{stage.name}-#{stage.counter}.xml", 'w' do |f|
             f.write stage_status.to_xml
           end
         rescue => e
@@ -61,7 +39,7 @@ namespace :dump do
   task :stage_status do
     CruiseFace.site('https://cruise01.thoughtworks.com/cruise').login('xli', Base64.decode64(ENV['LDAP_CODE']))
     pipeline = CruiseFace::Resource.find_stage_status(ENV['PN'])
-    File.open "./test/data/#{pipeline.name}.xml", 'w' do |f|
+    File.open "./tast/data/#{pipeline.name}.xml", 'w' do |f|
       f.write pipeline.resource.to_xml
     end
     puts 'done'
@@ -70,7 +48,7 @@ end
 
 require 'echoe'
 
-Echoe.new('cruiseface', '1.0.0') do |p|
+Echoe.new('cruiseface', '1.0.1') do |p|
   p.description     = "CruiseFace arms to give a friendly Cruise Pipeline dashboard info for developers."
   p.url             = "https://github.com/xli/cruiseface"
   p.author          = "Li Xiao"
