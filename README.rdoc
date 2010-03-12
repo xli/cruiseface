@@ -2,12 +2,15 @@
 = CruiseFace -- A ruby terminal Cruise dashboard
 
 CruiseFace shows you a developer oriented Cruise dashboard in terminal, making
-things simple for monitoring Cruise pipelines.
+things simpler for monitoring Cruise pipelines.
 
 == How it works
 
 First time, you may try this, after installed the gem, type in 'cruiseface'
-Then it'll ask you cruise site url, e.g. https://cruise.domain.com/cruise
+Then it'll ask you cruise site url, for example:
+
+  https://cruise.domain.com/cruise
+
 Then your login user name and password
 Then it will fetch all pipelines on the server, and list them, you need type in
 the index number, e.g. 5,10
