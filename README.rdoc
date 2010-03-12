@@ -1,0 +1,64 @@
+
+= CruiseFace -- A ruby terminal Cruise dashboard
+
+CruiseFace shows you a developer oriented Cruise dashboard in terminal, making
+things simple for monitoring Cruise pipelines.
+
+== How it works
+
+First time, you may try this, after installed the gem, type in 'cruiseface'
+Then it'll ask you cruise site url, e.g. https://cruise.domain.com/cruise
+Then your login user name and password
+Then it will fetch all pipelines on the server, and list them, you need type in
+the index number, e.g. 5,10
+Done.
+
+For myself, I open a terminal window using black background and change the font to 18pt.
+Then specifying some environment variables in my ~/.profile:
+
+  export CRUISE_SERVER_URL='https://cruise.domain.com/cruise'
+  export CRUISE_LOGIN_NAME="xli"
+  export CRUISE_PIPELINE_NAMES='xx_trunk--CentOS5,xx_trunk--Windows2003'
+
+Then type 'cruiseface' in the terminal, cruiseface will ask for the password.
+Done.
+
+== Why a new dashboard
+
+When working with 2 pipelines, each has 4+ stages and there are 50+ jobs a stage,
+the following thing got important for my daily work of checking build:
+
+* Build pass/failed status
+
+* How many jobs failed right now, even all jobs are building
+
+* Who has responsibility for failed jobs
+
+* Is failed job currently building? (When I committed a fix for the failed job, I really want to know whether the failed is fixed by my commit once the job is finished)
+
+* some time, I may want to know the failing job name, but most of time, I just need the number of how many jobs failing.
+
+* what's stage building, and who committed from last built stage (Cruise does not work in this way, so cruiseface also does not implement it yet, just display pipeline committers now)
+
+* how many jobs are building, and I don't care about build success jobs
+
+== Limitation
+
+It only works on Mac, it could be run on other platform, but the color stuff won't work.
+
+= Other stuff
+
+Author: Li Xiao <iam@li-xiao.com>
+
+Requires: Ruby 1.8.6 or later
+
+License: Copyright 2010 by Li Xiao.
+         Released under an MIT-LICENSE.  See the MIT-LICENSE.txt file
+         included in the distribution.
+
+== Warranty
+
+This software is provided "as is" and without any express or
+implied warranties, including, without limitation, the implied
+warranties of merchantibility and fitness for a particular
+purpose.

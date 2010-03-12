@@ -1,0 +1,1 @@
+require 'cruise_face'

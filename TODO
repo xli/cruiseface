@@ -1,0 +1,17 @@
+
+
+new
+
+# built a detail view instead of only show failing jobs name instead of count
+# guess how much time left for a stage
+# need a fancy UI
+# when some jobs failed on one stage, and rerun the stage, the failure info does not showup
+# committers of a stage should include all committers did commit after last time the stage built
+
+done
+
+# get all pipeline names for configuring monitor
+# committers
+# pipeline history parse
+## stage history
+## job history

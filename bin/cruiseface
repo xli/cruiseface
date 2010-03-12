@@ -1,0 +1,104 @@
+#!/usr/bin/env ruby
+begin
+  require 'cruiseface'
+rescue LoadError
+  require 'rubygems'
+  require 'cruiseface'
+end
+
+begin
+  require "highline/import"
+rescue LoadError
+  require 'rubygems'
+  require "highline/import"
+end
+
+require 'optparse'
+
+opts = OptionParser.new do |opts|
+  opts.banner = "CruiseFace usage: #{$0} [options]"
+  opts.separator ""
+  opts.separator "Environment properties CruiseFace uses as input if exists:"
+  opts.separator "  CRUISE_SERVER_URL, CRUISE_LOGIN_NAME, CRUISE_PIPELINE_NAMES, CRUISE_LOGIN_PASSWORD"
+  opts.separator "Synopsis:"
+  opts.separator "cruiseface"
+  opts.separator "cruiseface -s 'http://domain.com/cruise' -u login_name -p pipeline1,pipeline2"
+  opts.separator ""
+  opts.separator "Options:"
+
+  opts.on("-s", "--server CRUISE_SERVER_URL",  "Cruise server URL, including server context path") do |site|
+    ENV['CRUISE_SERVER_URL'] = site
+  end
+  
+  opts.on("-u", "--user LOGIN_NAME",  "Login name for login cruise server") do |login_name|
+    ENV['CRUISE_LOGIN_NAME'] = login_name
+  end
+  
+  opts.on("-p pipeline1,pipeline2", Array, "Pipeline names to be monitored") do |names|
+    ENV['CRUISE_PIPELINE_NAMES'] = names.join(',')
+  end
+
+  opts.on("-w", "--password PASSWORD",  "Password for login cruise server") do |password|
+    ENV['CRUISE_LOGIN_PASSWORD'] = password
+  end
+
+  opts.on_tail("-o", "--output", "Output cruise pipeline status and then exit") do
+    $cruise_fetch_once = true
+  end
+  
+  opts.on_tail("-d", "--debug", "Open debug mode") do
+    ENV['CRUISE_FACE_DEBUG'] = 'true'
+  end
+
+  opts.on_tail("-v", "--version", "Show version") do
+    puts "cruiseface, version " + CruiseFace::VERSION
+    exit
+  end
+
+  opts.on_tail("-h", "--help", "Show this help doc") do 
+    puts opts
+    exit
+  end
+end
+
+opts.parse!
+
+if ENV['CRUISE_FACE_DEBUG']
+  ActiveResource::Base.logger = Logger.new(STDOUT)
+  ActiveResource::Base.logger.level = Logger::DEBUG
+end
+
+ENV['CRUISE_SERVER_URL']      ||= ask("Cruise server url (e.g. http://domain.com/cruise): ")
+ENV['CRUISE_LOGIN_NAME']      ||= ask("Cruise server login name: ")
+ENV['CRUISE_LOGIN_PASSWORD']  ||= ask("Cruise server login password: ") { |q| q.echo = false }
+
+CruiseFace.site(ENV['CRUISE_SERVER_URL'])
+CruiseFace.login(ENV['CRUISE_LOGIN_NAME'], ENV['CRUISE_LOGIN_PASSWORD'])
+
+unless ENV['CRUISE_PIPELINE_NAMES']
+  puts "Fetching pipeline names from cruise server..."
+  puts "You can specify an environment variable CRUISE_PIPELINE_NAMES with names of pipelines split by comma to avoid fetching pipeline names every time you start cruiseface"
+  all_pipelines = CruiseFace.pipelines
+  all_pipelines.each_with_index do |p, index|
+    puts "  #{index}. #{p}"
+  end
+  puts "Pipelines (type in indexes split by comma): "
+  pipelines = gets.strip.split(",").collect(&:strip)
+  if pipelines.all? {|p| p =~ /^\d+$/}
+    ENV['CRUISE_PIPELINE_NAMES'] = pipelines.collect {|p_index| all_pipelines[p_index.to_i]}.join(',')
+  else
+    ENV['CRUISE_PIPELINE_NAMES'] = pipelines.join(',')
+  end
+end
+
+begin
+  cruise_pipeline_names = ENV['CRUISE_PIPELINE_NAMES'].split(",").collect(&:strip)
+  if $cruise_fetch_once
+    cruise_pipeline_names.each do |name|
+      CruiseFace.output(name)
+    end
+  else
+    CruiseFace.console(cruise_pipeline_names)
+  end
+rescue Interrupt
+end
