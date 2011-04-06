@@ -48,11 +48,11 @@ end
 
 require 'echoe'
 
-Echoe.new('cruiseface', '1.0.1') do |p|
+Echoe.new('cruiseface', '1.0.2') do |p|
   p.description     = "CruiseFace arms to give a friendly Cruise Pipeline dashboard info for developers."
   p.url             = "https://github.com/xli/cruiseface"
   p.author          = "Li Xiao"
-  p.email           = "iam@li-xiao.com"
+  p.email           = "swing1979@gmail.com"
   p.ignore_pattern  = "*.gemspec"
   p.dependencies = ["activeresource", "highline"]
   p.ignore_pattern = ['tast/*.rb', 'tast/**/*']
