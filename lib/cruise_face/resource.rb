@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'thread'
 require 'active_resource'
 
 module CruiseFace
